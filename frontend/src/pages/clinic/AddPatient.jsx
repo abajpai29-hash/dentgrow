@@ -6,7 +6,7 @@ const TREATMENTS = ['Cleaning', 'Filling', 'RCT', 'Crown', 'Extraction', 'Braces
 
 export default function AddPatient() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', mobile: '', treatment_type: '' });
+  const [form, setForm] = useState({ name: '', mobile: '', age: '', gender: '', treatment_type: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -19,7 +19,12 @@ export default function AddPatient() {
     setLoading(true);
     setError('');
     try {
-      await client.post('/patients', { name: form.name.trim(), mobile: form.mobile.trim() });
+      await client.post('/patients', {
+        name: form.name.trim(),
+        mobile: form.mobile.trim(),
+        age: form.age ? parseInt(form.age, 10) : null,
+        gender: form.gender || null,
+      });
       navigate('/clinic/patients');
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to add patient');
@@ -65,6 +70,34 @@ export default function AddPatient() {
               className="w-full border-2 border-gray-200 focus:border-teal-500 rounded-2xl px-4 py-4 text-lg focus:outline-none"
               required
             />
+          </div>
+
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="block text-base font-semibold text-gray-800 mb-2">Age (optional)</label>
+              <input
+                type="number"
+                value={form.age}
+                onChange={(e) => setForm({ ...form, age: e.target.value })}
+                placeholder="e.g. 32"
+                min="1"
+                max="120"
+                className="w-full border-2 border-gray-200 focus:border-teal-500 rounded-2xl px-4 py-4 text-lg focus:outline-none"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-base font-semibold text-gray-800 mb-2">Gender (optional)</label>
+              <select
+                value={form.gender}
+                onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                className="w-full border-2 border-gray-200 focus:border-teal-500 rounded-2xl px-4 py-4 text-lg focus:outline-none bg-white"
+              >
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
           </div>
 
           <div>
