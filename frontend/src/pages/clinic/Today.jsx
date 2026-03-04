@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import client from '../../api/client';
-import { useAuth } from '../../contexts/AuthContext';
+import ClinicLayout from '../../components/clinic/ClinicLayout';
 
 const TREATMENT_ICONS = {
   Cleaning: '🪥', Filling: '🦷', RCT: '🔧', Crown: '👑',
@@ -23,8 +23,6 @@ function formatTime(datetime) {
 }
 
 export default function ClinicToday() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
@@ -53,35 +51,19 @@ export default function ClinicToday() {
     weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Kolkata',
   });
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <nav className="bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between sticky top-0 z-10">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">🦷</span>
-          <span className="font-bold text-teal-600">DentGrow</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link to="/clinic/patients" className="text-sm text-gray-600 font-medium">Patients</Link>
-          <Link to="/clinic/messages" className="text-sm text-gray-600 font-medium">Messages</Link>
-          <button onClick={() => { logout(); navigate('/login'); }} className="text-sm text-gray-400">Logout</button>
-        </div>
-      </nav>
+  const addBtn = (
+    <Link
+      to="/clinic/appointments/add"
+      className="bg-teal-600 text-white text-sm font-medium px-4 py-2 rounded-xl active:scale-95 transition-transform"
+    >
+      + Add
+    </Link>
+  );
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        {/* Date + actions */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">Today's Appointments</h1>
-            <p className="text-gray-500 text-sm">{today}</p>
-          </div>
-          <Link
-            to="/clinic/appointments/add"
-            className="bg-teal-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl active:scale-95 transition-transform"
-          >
-            + Add
-          </Link>
-        </div>
+  return (
+    <ClinicLayout title="Today" rightAction={addBtn}>
+      <div className="max-w-2xl mx-auto px-4 py-5">
+        <p className="text-gray-500 text-sm mb-5">{today}</p>
 
         {loading ? (
           <div className="text-center text-gray-400 py-16">Loading...</div>
@@ -154,6 +136,6 @@ export default function ClinicToday() {
           </div>
         )}
       </div>
-    </div>
+    </ClinicLayout>
   );
 }

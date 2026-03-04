@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import client from '../../api/client';
+import ClinicLayout from '../../components/clinic/ClinicLayout';
 
 const STATUS_COLORS = {
   sent: 'bg-blue-100 text-blue-700',
@@ -20,12 +20,7 @@ export default function ClinicMessagesLog() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b border-gray-200 px-4 py-4 flex items-center gap-3 sticky top-0">
-        <Link to="/clinic" className="text-gray-400 text-xl">←</Link>
-        <h1 className="font-bold text-gray-900">Messages Sent</h1>
-      </nav>
-
+    <ClinicLayout title="Messages">
       <div className="max-w-2xl mx-auto px-4 py-4">
         {loading ? (
           <div className="text-center text-gray-400 py-16">Loading...</div>
@@ -54,6 +49,6 @@ export default function ClinicMessagesLog() {
           </div>
         )}
       </div>
-    </div>
+    </ClinicLayout>
   );
 }
