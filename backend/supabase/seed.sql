@@ -61,7 +61,7 @@ VALUES
     'DentGrow Admin',
     'superadmin',
     'admin@dentgrow.in',
-    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy'
+    '$2a$10$IbnSMS4xxxfqf0q2IM4nLehcSPJkZoGZX4BSGF2HGbIVtwJlM596.'
   ),
   -- SmileCare receptionist
   (
@@ -70,7 +70,7 @@ VALUES
     'Sunita Kumari',
     'receptionist',
     'sunita@smilecare.com',
-    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy'
+    '$2a$10$IbnSMS4xxxfqf0q2IM4nLehcSPJkZoGZX4BSGF2HGbIVtwJlM596.'
   ),
   -- BrightSmile receptionist
   (
@@ -79,7 +79,7 @@ VALUES
     'Kavya Nair',
     'receptionist',
     'kavya@brightsmile.com',
-    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy'
+    '$2a$10$IbnSMS4xxxfqf0q2IM4nLehcSPJkZoGZX4BSGF2HGbIVtwJlM596.'
   ),
   -- OrthoCare receptionist
   (
@@ -88,7 +88,7 @@ VALUES
     'Renu Singh',
     'receptionist',
     'renu@orthocare.com',
-    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy'
+    '$2a$10$IbnSMS4xxxfqf0q2IM4nLehcSPJkZoGZX4BSGF2HGbIVtwJlM596.'
   );
 
 -- ============================================================
