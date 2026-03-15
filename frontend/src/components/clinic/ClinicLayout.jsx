@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 const NAV = [
   { to: '/clinic', label: 'Today', icon: '📅' },
   { to: '/clinic/patients', label: 'Patients', icon: '👥' },
-  { to: '/clinic/messages', label: 'Messages', icon: '💬' },
+  { to: '/clinic/dashboard', label: 'Dashboard', icon: '📊' },
 ];
 
 export default function ClinicLayout({ title, rightAction, children }) {

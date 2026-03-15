@@ -4,6 +4,11 @@ const { authenticate } = require('../middleware/auth');
 
 const router = express.Router();
 
+function toTitleCase(str) {
+  if (!str) return str;
+  return str.trim().toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 // Resolve clinic_id based on user role
 function getClinicId(req) {
   if (req.user.role === 'superadmin') return req.query.clinic_id;
@@ -68,7 +73,7 @@ router.post('/', authenticate, async (req, res) => {
 
   const { data, error } = await supabase
     .from('patients')
-    .insert({ clinic_id, name, mobile, age, gender, notes })
+    .insert({ clinic_id, name: toTitleCase(name), mobile, age, gender, notes })
     .select()
     .single();
 
@@ -81,7 +86,9 @@ router.patch('/:id', authenticate, async (req, res) => {
   const allowed = ['name', 'mobile', 'age', 'gender', 'notes'];
   const updates = {};
   for (const key of allowed) {
-    if (req.body[key] !== undefined) updates[key] = req.body[key];
+    if (req.body[key] !== undefined) {
+      updates[key] = key === 'name' ? toTitleCase(req.body[key]) : req.body[key];
+    }
   }
 
   const { data: existing } = await supabase

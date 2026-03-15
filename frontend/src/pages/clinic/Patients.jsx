@@ -48,7 +48,7 @@ export default function ClinicPatients() {
                   </div>
                   <div className="text-right">
                     <p className="text-gray-400 text-sm">{p.age ? `${p.age} yrs` : ''}</p>
-                    <p className="text-gray-400 text-xs">{p.gender}</p>
+                    <p className="text-gray-400 text-xs">{p.gender ? p.gender.charAt(0).toUpperCase() + p.gender.slice(1) : ''}</p>
                   </div>
                 </div>
               </Link>
