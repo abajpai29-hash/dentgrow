@@ -16,7 +16,10 @@ import ClinicPatients from './pages/clinic/Patients';
 import AddPatient from './pages/clinic/AddPatient';
 import AddAppointment from './pages/clinic/AddAppointment';
 import PatientDetail from './pages/clinic/PatientDetail';
+import EditPatient from './pages/clinic/EditPatient';
 import ClinicMessagesLog from './pages/clinic/MessagesLog';
+import Upcoming from './pages/clinic/Upcoming';
+import ClinicDashboard from './pages/clinic/ClinicDashboard';
 
 function RequireAuth({ children, role }) {
   const { user } = useAuth();
@@ -73,11 +76,20 @@ export default function App() {
           <Route path="/clinic/patients/:id" element={
             <RequireAuth><PatientDetail /></RequireAuth>
           } />
+          <Route path="/clinic/patients/:id/edit" element={
+            <RequireAuth><EditPatient /></RequireAuth>
+          } />
           <Route path="/clinic/appointments/add" element={
             <RequireAuth><AddAppointment /></RequireAuth>
           } />
           <Route path="/clinic/messages" element={
             <RequireAuth><ClinicMessagesLog /></RequireAuth>
+          } />
+          <Route path="/clinic/upcoming" element={
+            <RequireAuth><Upcoming /></RequireAuth>
+          } />
+          <Route path="/clinic/dashboard" element={
+            <RequireAuth><ClinicDashboard /></RequireAuth>
           } />
         </Routes>
       </HashRouter>

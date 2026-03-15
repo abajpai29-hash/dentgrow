@@ -1,24 +1,27 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import client from '../../api/client';
 
-const TREATMENTS = ['Cleaning', 'Filling', 'RCT', 'Crown', 'Extraction', 'Braces', 'Implant', 'Consultation', 'Whitening', 'Other'];
-
-function defaultDatetime() {
-  const now = new Date();
-  now.setMinutes(0, 0, 0);
-  now.setHours(now.getHours() + 1);
-  return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-}
-
-export default function AddPatient() {
+export default function EditPatient() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    name: '', mobile: '', age: '', gender: '',
-    treatment_type: '', datetime: defaultDatetime(),
-  });
-  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ name: '', mobile: '', age: '', gender: '', notes: '' });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    client.get(`/patients/${id}`).then((res) => {
+      const p = res.data;
+      setForm({
+        name: p.name || '',
+        mobile: p.mobile || '',
+        age: p.age ?? '',
+        gender: p.gender || '',
+        notes: p.notes || '',
+      });
+    }).finally(() => setLoading(false));
+  }, [id]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -26,38 +29,33 @@ export default function AddPatient() {
       setError('Name and mobile are required');
       return;
     }
-    setLoading(true);
+    setSaving(true);
     setError('');
     try {
-      const { data: patient } = await client.post('/patients', {
+      await client.patch(`/patients/${id}`, {
         name: form.name.trim(),
         mobile: form.mobile.trim(),
         age: form.age ? parseInt(form.age, 10) : null,
         gender: form.gender || null,
+        notes: form.notes.trim() || null,
       });
-
-      // If a treatment was selected, also create the first appointment
-      if (form.treatment_type && form.datetime) {
-        await client.post('/appointments', {
-          patient_id: patient.id,
-          datetime: new Date(form.datetime).toISOString(),
-          treatment_type: form.treatment_type,
-        });
-      }
-
-      navigate(`/clinic/patients/${patient.id}`);
+      navigate(`/clinic/patients/${id}`);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to add patient');
+      setError(err.response?.data?.error || 'Failed to save changes');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   }
+
+  if (loading) return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-400">Loading...</div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b border-gray-200 px-4 py-4 flex items-center gap-3 sticky top-0">
-        <Link to="/clinic/patients" className="text-gray-400 text-xl">←</Link>
-        <h1 className="font-bold text-gray-900 text-lg">Add Patient</h1>
+        <Link to={`/clinic/patients/${id}`} className="text-gray-400 text-xl">←</Link>
+        <h1 className="font-bold text-gray-900 text-lg">Edit Patient</h1>
       </nav>
 
       <div className="max-w-lg mx-auto px-4 py-8">
@@ -74,7 +72,6 @@ export default function AddPatient() {
               type="text"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g. Priya Sharma"
               className="w-full border-2 border-gray-200 focus:border-teal-500 rounded-2xl px-4 py-4 text-lg focus:outline-none"
               required
             />
@@ -86,7 +83,6 @@ export default function AddPatient() {
               type="tel"
               value={form.mobile}
               onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-              placeholder="e.g. 9876543210"
               className="w-full border-2 border-gray-200 focus:border-teal-500 rounded-2xl px-4 py-4 text-lg focus:outline-none"
               required
             />
@@ -94,19 +90,18 @@ export default function AddPatient() {
 
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="block text-base font-semibold text-gray-800 mb-2">Age (optional)</label>
+              <label className="block text-base font-semibold text-gray-800 mb-2">Age</label>
               <input
                 type="number"
                 value={form.age}
                 onChange={(e) => setForm({ ...form, age: e.target.value })}
-                placeholder="e.g. 32"
                 min="1"
                 max="120"
                 className="w-full border-2 border-gray-200 focus:border-teal-500 rounded-2xl px-4 py-4 text-lg focus:outline-none"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-base font-semibold text-gray-800 mb-2">Gender (optional)</label>
+              <label className="block text-base font-semibold text-gray-800 mb-2">Gender</label>
               <select
                 value={form.gender}
                 onChange={(e) => setForm({ ...form, gender: e.target.value })}
@@ -121,39 +116,22 @@ export default function AddPatient() {
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-800 mb-2">First Treatment (optional)</label>
-            <select
-              value={form.treatment_type}
-              onChange={(e) => setForm({ ...form, treatment_type: e.target.value })}
-              className="w-full border-2 border-gray-200 focus:border-teal-500 rounded-2xl px-4 py-4 text-lg focus:outline-none bg-white"
-            >
-              <option value="">Select treatment</option>
-              {TREATMENTS.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
+            <label className="block text-base font-semibold text-gray-800 mb-2">Notes</label>
+            <textarea
+              value={form.notes}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              placeholder="e.g. Allergic to penicillin, prefers morning appointments"
+              rows={3}
+              className="w-full border-2 border-gray-200 focus:border-teal-500 rounded-2xl px-4 py-4 text-base focus:outline-none resize-none"
+            />
           </div>
-
-          {/* Show datetime picker only when a treatment is selected */}
-          {form.treatment_type && (
-            <div>
-              <label className="block text-base font-semibold text-gray-800 mb-2">Appointment Date & Time *</label>
-              <input
-                type="datetime-local"
-                value={form.datetime}
-                onChange={(e) => setForm({ ...form, datetime: e.target.value })}
-                className="w-full border-2 border-teal-400 focus:border-teal-500 rounded-2xl px-4 py-4 text-lg focus:outline-none"
-                required
-              />
-            </div>
-          )}
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={saving}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-2xl text-lg active:scale-95 transition-all disabled:opacity-60 mt-4"
           >
-            {loading ? 'Adding...' : form.treatment_type ? 'Add Patient & Book Appointment' : 'Add Patient'}
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </form>
       </div>

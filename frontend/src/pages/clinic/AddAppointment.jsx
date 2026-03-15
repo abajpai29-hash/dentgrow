@@ -1,16 +1,28 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import client from '../../api/client';
 
 const TREATMENTS = ['Cleaning', 'Filling', 'RCT', 'Crown', 'Extraction', 'Braces', 'Implant', 'Consultation', 'Whitening', 'Other'];
 
 export default function AddAppointment() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [patients, setPatients] = useState([]);
   const [search, setSearch] = useState('');
   const [form, setForm] = useState({ patient_id: '', datetime: '', treatment_type: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Pre-select patient if patient_id is passed in URL (e.g. from patient detail page)
+  useEffect(() => {
+    const pid = searchParams.get('patient_id');
+    if (pid) {
+      client.get(`/patients/${pid}`).then((res) => {
+        setPatients([res.data]);
+        setForm((f) => ({ ...f, patient_id: pid }));
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const delay = setTimeout(() => {
