@@ -7,7 +7,7 @@ const os = require('os');
 
 const KEY_PATH = path.join(process.env.USERPROFILE || os.homedir(), '.ssh', 'dentgrow_tunnel');
 const PORT = process.env.PORT || 3001;
-const REPO = 'abajpai29-hash/dentgrow';
+const REPO = 'abajpai29/dentgrow';
 const URL_FILE = 'public-url.txt';
 
 // Strip ANSI escape codes
