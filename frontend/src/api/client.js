@@ -4,8 +4,8 @@ import axios from 'axios';
 const PUBLIC_URL_RAW =
   'https://raw.githubusercontent.com/abajpai29/dentgrow/master/public-url.txt';
 
-const CACHE_KEY = 'dentgrow_api_url';
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_KEY = 'dentgrow_api_url_v2';
+const CACHE_TTL = 2 * 60 * 1000; // 2 minutes
 
 let resolvedBase = null;
 
