@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Raw GitHub URL — tunnel.js updates this file automatically on every reconnect
 const PUBLIC_URL_RAW =
-  'https://raw.githubusercontent.com/abajpai29-hash/dentgrow/master/public-url.txt';
+  'https://raw.githubusercontent.com/abajpai29/dentgrow/master/public-url.txt';
 
 const CACHE_KEY = 'dentgrow_api_url';
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
